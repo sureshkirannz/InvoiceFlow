@@ -11,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Upload, Building2 } from "lucide-react";
+import { CompanyWithBankDetails } from "@shared/schema";
 
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),
@@ -37,7 +38,7 @@ export default function CompanySettings() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: company, isLoading } = useQuery({
+  const { data: company, isLoading } = useQuery<CompanyWithBankDetails>({
     queryKey: ["/api/company"],
     retry: false,
   });
@@ -95,9 +96,9 @@ export default function CompanySettings() {
   const updateCompanyMutation = useMutation({
     mutationFn: async (data: CompanyFormData) => {
       if (company?.id) {
-        await apiRequest("PUT", `/api/company/${company.id}`, data);
+        await apiRequest(`/api/company/${company.id}`, "PUT", data);
       } else {
-        await apiRequest("POST", "/api/company", data);
+        await apiRequest("/api/company", "POST", data);
       }
     },
     onSuccess: () => {
@@ -119,9 +120,9 @@ export default function CompanySettings() {
   const updateBankDetailsMutation = useMutation({
     mutationFn: async (data: BankDetailsFormData) => {
       if (company?.bankDetails && company.bankDetails.length > 0) {
-        await apiRequest("PUT", `/api/bank-details/${company.id}`, data);
+        await apiRequest(`/api/bank-details/${company.id}`, "PUT", data);
       } else {
-        await apiRequest("POST", "/api/bank-details", { ...data, companyId: company?.id });
+        await apiRequest("/api/bank-details", "POST", { ...data, companyId: company?.id });
       }
     },
     onSuccess: () => {
