@@ -145,7 +145,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Client operations
-  async getClientsByUserId(userId: string): Promise<Client[]> {
+  async getClientsByUserId(userId: number): Promise<Client[]> {
     return await db
       .select()
       .from(clients)
@@ -183,7 +183,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Invoice operations
-  async getInvoicesByUserId(userId: string): Promise<InvoiceWithDetails[]> {
+  async getInvoicesByUserId(userId: number): Promise<InvoiceWithDetails[]> {
     const invoicesData = await db
       .select()
       .from(invoices)
@@ -273,7 +273,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Invoice statistics
-  async getInvoiceStats(userId: string): Promise<{
+  async getInvoiceStats(userId: number): Promise<{
     totalInvoices: number;
     pendingAmount: string;
     paidAmount: string;
@@ -323,7 +323,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Payment settings operations
-  async getPaymentSettings(userId: string): Promise<PaymentSettings | undefined> {
+  async getPaymentSettings(userId: number): Promise<PaymentSettings | undefined> {
     const [settings] = await db
       .select()
       .from(paymentSettings)
