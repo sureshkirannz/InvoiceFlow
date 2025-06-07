@@ -65,7 +65,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const user = await storage.getUser(userId);
       res.json(user);
     } catch (error) {
@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Company routes
   app.get('/api/company', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const company = await storage.getCompanyByUserId(userId);
       res.json(company);
     } catch (error) {
@@ -88,7 +88,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/company', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const companyData = insertCompanySchema.parse({ ...req.body, userId });
       const company = await storage.createCompany(companyData);
       res.json(company);
@@ -152,7 +152,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Client routes
   app.get('/api/clients', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const clients = await storage.getClientsByUserId(userId);
       res.json(clients);
     } catch (error) {
@@ -177,7 +177,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/clients', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const clientData = insertClientSchema.parse({ ...req.body, userId });
       const client = await storage.createClient(clientData);
       res.json(client);
@@ -213,7 +213,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Invoice routes
   app.get('/api/invoices', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const invoices = await storage.getInvoicesByUserId(userId);
       res.json(invoices);
     } catch (error) {
@@ -243,7 +243,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/invoices', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const { invoice: invoiceData, items } = createInvoiceSchema.parse(req.body);
       
       const invoice = await storage.createInvoice(
@@ -283,7 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Invoice statistics
   app.get('/api/invoices/stats', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const stats = await storage.getInvoiceStats(userId);
       res.json(stats);
     } catch (error) {
@@ -413,7 +413,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Payment settings routes
   app.get('/api/payment-settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const settings = await storage.getPaymentSettings(userId);
       res.json(settings);
     } catch (error) {
@@ -424,7 +424,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/payment-settings', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user.id;
       const settingsData = insertPaymentSettingsSchema.parse({ ...req.body, userId });
       const settings = await storage.upsertPaymentSettings(settingsData);
       res.json(settings);
