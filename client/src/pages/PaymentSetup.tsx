@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,7 +45,7 @@ export default function PaymentSetup() {
   });
 
   // Update form when payment settings are loaded
-  React.useEffect(() => {
+  useEffect(() => {
     if (paymentSettings) {
       form.reset({
         stripeAccountId: paymentSettings.stripeAccountId || "",
