@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth, isAuthenticated } from "./replitAuth";
@@ -53,13 +53,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   await setupAuth(app);
 
   // Serve uploaded files
-  app.use('/uploads', app.use('/uploads', (req, res, next) => {
+  app.use('/uploads', (req, res, next) => {
     // Basic security check - ensure user is authenticated to access uploads
     if (!req.isAuthenticated()) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
     next();
-  }), express.static('uploads')));
+  });
+  app.use('/uploads', express.static('uploads'));
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
