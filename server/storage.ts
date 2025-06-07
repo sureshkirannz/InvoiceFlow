@@ -7,7 +7,7 @@ import {
   invoiceItems,
   paymentSettings,
   type User,
-  type UpsertUser,
+  type InsertUser,
   type Company,
   type InsertCompany,
   type BankDetails,
@@ -34,7 +34,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
 
   // Company operations
-  getCompanyByUserId(userId: string): Promise<CompanyWithBankDetails | undefined>;
+  getCompanyByUserId(userId: number): Promise<CompanyWithBankDetails | undefined>;
   createCompany(company: InsertCompany): Promise<Company>;
   updateCompany(id: number, company: Partial<InsertCompany>): Promise<Company>;
   
@@ -43,21 +43,21 @@ export interface IStorage {
   updateBankDetails(companyId: number, bankDetails: Partial<InsertBankDetails>): Promise<BankDetails>;
   
   // Client operations
-  getClientsByUserId(userId: string): Promise<Client[]>;
+  getClientsByUserId(userId: number): Promise<Client[]>;
   getClientById(id: number): Promise<Client | undefined>;
   createClient(client: InsertClient): Promise<Client>;
   updateClient(id: number, client: Partial<InsertClient>): Promise<Client>;
   deleteClient(id: number): Promise<void>;
   
   // Invoice operations
-  getInvoicesByUserId(userId: string): Promise<InvoiceWithDetails[]>;
+  getInvoicesByUserId(userId: number): Promise<InvoiceWithDetails[]>;
   getInvoiceById(id: number): Promise<InvoiceWithDetails | undefined>;
   createInvoice(invoice: InsertInvoice, items: InsertInvoiceItem[]): Promise<InvoiceWithDetails>;
   updateInvoice(id: number, invoice: Partial<InsertInvoice>): Promise<Invoice>;
   deleteInvoice(id: number): Promise<void>;
   
   // Invoice statistics
-  getInvoiceStats(userId: string): Promise<{
+  getInvoiceStats(userId: number): Promise<{
     totalInvoices: number;
     pendingAmount: string;
     paidAmount: string;
@@ -65,34 +65,32 @@ export interface IStorage {
   }>;
   
   // Payment settings operations
-  getPaymentSettings(userId: string): Promise<PaymentSettings | undefined>;
+  getPaymentSettings(userId: number): Promise<PaymentSettings | undefined>;
   upsertPaymentSettings(settings: InsertPaymentSettings): Promise<PaymentSettings>;
 }
 
 export class DatabaseStorage implements IStorage {
-  // User operations (mandatory for Replit Auth)
-  async getUser(id: string): Promise<User | undefined> {
+  // User operations (email/password auth)
+  async getUser(id: number): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
-  async upsertUser(userData: UpsertUser): Promise<User> {
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
     const [user] = await db
       .insert(users)
       .values(userData)
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          ...userData,
-          updatedAt: new Date(),
-        },
-      })
       .returning();
     return user;
   }
 
   // Company operations
-  async getCompanyByUserId(userId: string): Promise<CompanyWithBankDetails | undefined> {
+  async getCompanyByUserId(userId: number): Promise<CompanyWithBankDetails | undefined> {
     const [company] = await db
       .select()
       .from(companies)
