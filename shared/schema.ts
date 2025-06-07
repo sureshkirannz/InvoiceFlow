@@ -27,21 +27,20 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
-// User storage table.
-// (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
+// User storage table for email/password authentication
 export const users = pgTable("users", {
-  id: varchar("id").primaryKey().notNull(),
-  email: varchar("email").unique(),
+  id: serial("id").primaryKey(),
+  email: varchar("email").unique().notNull(),
+  password: varchar("password").notNull(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
-  profileImageUrl: varchar("profile_image_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const companies = pgTable("companies", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull(),
+  userId: integer("user_id").notNull(),
   name: varchar("name").notNull(),
   email: varchar("email"),
   phone: varchar("phone"),
@@ -66,7 +65,7 @@ export const bankDetails = pgTable("bank_details", {
 
 export const clients = pgTable("clients", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull(),
+  userId: integer("user_id").notNull(),
   name: varchar("name").notNull(),
   email: varchar("email"),
   phone: varchar("phone"),
@@ -78,7 +77,7 @@ export const clients = pgTable("clients", {
 
 export const invoices = pgTable("invoices", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull(),
+  userId: integer("user_id").notNull(),
   clientId: integer("client_id").notNull(),
   invoiceNumber: varchar("invoice_number").notNull().unique(),
   issueDate: date("issue_date").notNull(),
@@ -107,7 +106,7 @@ export const invoiceItems = pgTable("invoice_items", {
 
 export const paymentSettings = pgTable("payment_settings", {
   id: serial("id").primaryKey(),
-  userId: varchar("user_id").notNull(),
+  userId: integer("user_id").notNull(),
   stripeAccountId: varchar("stripe_account_id"),
   paypalAccountId: varchar("paypal_account_id"),
   bankTransferEnabled: boolean("bank_transfer_enabled").default(false),
