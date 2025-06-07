@@ -59,7 +59,7 @@ export default function PaymentSetup() {
 
   const updatePaymentSettingsMutation = useMutation({
     mutationFn: async (data: PaymentSettingsFormData) => {
-      await apiRequest("POST", "/api/payment-settings", {
+      await apiRequest("/api/payment-settings", "POST", {
         ...data,
         lateFeePercentage: data.lateFeePercentage,
       });

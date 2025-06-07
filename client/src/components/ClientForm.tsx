@@ -42,9 +42,9 @@ export default function ClientForm({ client, onSuccess }: ClientFormProps) {
   const clientMutation = useMutation({
     mutationFn: async (data: ClientFormData) => {
       if (client?.id) {
-        await apiRequest("PUT", `/api/clients/${client.id}`, data);
+        await apiRequest(`/api/clients/${client.id}`, "PUT", data);
       } else {
-        await apiRequest("POST", "/api/clients", data);
+        await apiRequest("/api/clients", "POST", data);
       }
     },
     onSuccess: () => {

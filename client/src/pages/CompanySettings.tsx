@@ -11,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Upload, Building2 } from "lucide-react";
-import { CompanyWithBankDetails } from "@shared/schema";
+import type { CompanyWithBankDetails } from "@shared/schema";
 
 const companySchema = z.object({
   name: z.string().min(1, "Company name is required"),

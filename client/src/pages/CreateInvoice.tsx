@@ -64,7 +64,7 @@ export default function CreateInvoice() {
 
   const createInvoiceMutation = useMutation({
     mutationFn: async (data: { invoice: any; items: any[] }) => {
-      await apiRequest("POST", "/api/invoices", data);
+      await apiRequest("/api/invoices", "POST", data);
     },
     onSuccess: () => {
       toast({
